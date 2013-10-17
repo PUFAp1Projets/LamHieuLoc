@@ -29,9 +29,9 @@ int main () {
   init_sprite(goutte, 1, 1, 1,1);
   for (int t=0;; t++) 
     {
-      system ("stty raw");
+      system ("stty raw"); 
       usleep(10 * 10000);
-      if (touche_appuyee()) {
+      if (touche_appuyee()) {  // OL: utilise plutot la fonction code_touche de goutte.cpp
 	char c = getchar();
       system ("stty cooked");
       switch (c) {
@@ -53,7 +53,7 @@ int main () {
 void mise_a_jour_sprite(Sprite & s) {
   s.x += s.dx;
   s.y += s.dy;
-  if ( s.x < 2 ) s.dx =1;
+  if ( s.x < 2 ) s.dx =1; // OL: Utilise un #define pour la vitesse du sprite
   if ( s.x > N-3 ) s.dx =-1;
   if ( s.y < 2 ) s.dy =1;
   if ( s.y > M-3 ) s.dy =-1;
