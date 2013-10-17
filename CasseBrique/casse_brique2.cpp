@@ -14,7 +14,7 @@ using namespace std;
 #define M 80
 #define speedx 1
 #define speedy 1
-#define nbr_gallet 20
+#define nbr_gallet 20 //le nombre de caractere "=" constitue le gallet
 
 
 /*****************************************************************************************/
@@ -36,7 +36,7 @@ void init_sprite(Sprite & s, double x, double y, double dx, double dy);
 void paysage ();
 void affiche_screen();
 void mise_a_jour_sprite(Sprite & s, Sprite q[]);
-void clavier (Sprite q[]);
+void clavier (Sprite q[]); //pour verifier l'entree depuis le clavier
 
 
 /*********************************** MAIN ************************************************/
@@ -51,33 +51,31 @@ int main () {
   for (int t=0;; t++) 
     {
       system ("stty raw");
-      //clavier (gallet);
       usleep(10 * 10000);
-      //clavier (gallet);
-      /*
-	if (code_touche() == 'm') 
+      clavier (gallet);
+      
+      if (code_touche() == 'm') 
 	{
-	system ("stty cooked");
-	if (gallet[nbr_gallet-1].y<M-3)
-	for ( int g=0; g<nbr_gallet; g++)
-	gallet[g].y += 3;
+	  system ("stty cooked");
+	  if (gallet[nbr_gallet-1].y<M-3)
+	    for ( int g=0; g<nbr_gallet; g++)
+	      gallet[g].y += 3;
 	
 	}
-	if (code_touche() == 'z')
-	
+      if (code_touche() == 'z')
 	{
-	system ("stty cooked");
-	if (gallet[0].y > 2)
-	for ( int g=0; g<nbr_gallet; g++)
-	gallet[g].y -= 3;
-	
+	  system ("stty cooked");
+	  if (gallet[0].y > 2)
+	    for ( int g=0; g<nbr_gallet; g++)
+	      gallet[g].y -= 3;
+	  
 	}
-	if (code_touche() == 27)
+      if (code_touche() == 27)
 	
 	{
-	system ("stty cooked");
-	exit(0);
-	}*/
+	  system ("stty cooked");
+	  exit(0);
+	}
       
       system ("stty cooked");
       
@@ -132,4 +130,51 @@ void mise_a_jour_sprite(Sprite & s,Sprite  q[]) {
   if ( s.y < 2 ) s.dy = speedy;
   if ( s.y > M-3 ) s.dy = -speedy;
   if ( s.x == N) exit(0);
+}void paysage() {
+  for (int i=0; i<N; i++)
+    for (int j=0; j<M; j++)
+      if (i==0 || i==N-1 || j==0 || j==M-1)
+        screen[i][j] = 'X';
+      else
+        screen[i][j] = ' ';
+}
+
+void affiche_screen() {
+  system("clear");
+  for (int i=0; i<N; i++) {
+    for (int j=0; j<M; j++)
+      cout << screen[i][j];
+    cout << endl;
+  }
+}
+
+int code_touche() {
+  int result = -1;
+  system ("stty raw");
+  if (touche_appuyee())
+    result = (int) getchar();
+  system ("stty cooked");
+  return result;
+}
+
+bool touche_appuyee()  
+{
+  struct timeval tv;
+  fd_set fds;
+  tv.tv_sec = 0;
+  tv.tv_usec = 0;
+  FD_ZERO(&fds);
+  FD_SET(STDIN_FILENO, &fds);
+  select(STDIN_FILENO+1, &fds, NULL, NULL, &tv);
+  return (FD_ISSET(0, &fds));
+}
+void init_sprite(Sprite & s,
+                 double x, 
+                 double y, 
+                 double dx, 
+                 double dy) {
+  s.x = x;
+  s.y = y;
+  s.dx = dx;
+  s.dy = dy;
 }
