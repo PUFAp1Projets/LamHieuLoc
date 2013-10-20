@@ -5,11 +5,11 @@ Le projet de Nguyen Thanh Son Lam et de Truong Ba Loc et de Mai Trung Hieu
 
 --Pour le jeu casse_brique--
 
-Monsieur Olivier,la reponse pour la deuxieme question se trouve dans le fichier nomme "casse_brique2.cpp".
+Monsieur Olivier, ici nous avons 2 fichiers pour repondre a votre premiere question.
 
-Nous avons rencontre un probleme, c'est que le gallet ne se deplace pas aussi vite comme on veut. Il faut taper plusieurs fois sur la touche pour mettre en mouvement le gallet. C'est dommage en fait. Que faisons - nous pour resoudre ce probleme ?
+En se basant sur votre fichier goutte.cpp, nous avons reecrit la code et il semble que le deuxieme "casse_brique1.cpp" marche bien que le premier.
 
-Nous esperons recevoir vos commentaires et votre solution a notre probleme afin d'ameliorer notre code.
+Nous esperons recevoir vos commentaires afin d'ameliorer notre code.
 Merci
 
 LamHieuLoc
