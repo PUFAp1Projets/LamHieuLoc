@@ -91,7 +91,7 @@ int main () {
   avant_jouer (goutte, gallet, gach, ball, score, level, gallet_neveau);
   verifier_condition (ball, score, level);
   
-  for (int t=0;; t++) 
+  while (1) 
   {
     system ("stty raw");
     usleep(10 * 10000);    
@@ -122,8 +122,9 @@ int main () {
     cout << "\nLevel: "<< level << "\t\tBall: "<< ball <<"\t\t\t\tScore:  " <<score;
     cout << "\n\tPress  'h' for help\t\tPress Spacebar to start\n";
     system ("stty cooked");
-    if (goutte.dy == 0) goto start_here;
+    if (goutte.dy == 0) break;
   }
+  goto start_here;
 }
 
 /********************************** Les fonctions ****************************************/
