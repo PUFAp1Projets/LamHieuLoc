@@ -33,7 +33,7 @@ Nous proposons ici 3 niveaux de difficulté (EASY, NORMAL, HARD), correspondant 
 Après chaque 10 secondes, la vitesse de la balle augmente. Chaque joueur aura 3 tours à jouer. 
 Le premier à laisser tous ses 3 balles hors de la table est vaincu. 
 Pour être équitable, la balle se déplace aléatoirement et n'apparait qu'au centre de la table. 
-Quant au niveau NORMAL et HARD, une écart de temps de 2 secondes est nécessaire pour que les balles n'apparaissent pas en même temps.
+Quant au niveau NORMAL et HARD, un écart de temps de 2 secondes est nécessaire pour que les balles n'apparaissent pas en même temps.
 
 V. Développement possible
 _ Créer les effets sonores pour rendre le jeu intéressant
