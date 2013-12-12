@@ -12,7 +12,11 @@ const int SCREEN_HEIGHT = 650;
 const int SCREEN_BPP = 24;
 const int SIZE_BUTTON_H = 75;
 const int SIZE_BUTTON_W = 75;
+const int SIZE_LEVEL_H = 125; //size cua button chon level
+const int SIZE_LEVEL_W = 125;
 const int NBR_BUTTON = 4; // button cua trang intro: level, help, play, quit
+const int NBR_LEVEL = 3; // co 3 cap do kho: easy, nomal, va crazy
+const int DIFFICULT=0;
 
 /***********************************************************************************/
 
@@ -20,8 +24,8 @@ SDL_Surface *screen=NULL;
 SDL_Surface *background=NULL;
 SDL_Surface *image2=NULL;
 SDL_Surface *button_img=NULL;
-SDL_Rect button[NBR_BUTTON];
-SDL_Rect button_press[NBR_BUTTON];
+SDL_Rect button[NBR_BUTTON], level[NBR_LEVEL];
+SDL_Rect button_press[NBR_BUTTON], level_press[NBR_LEVEL];
 SDL_Event event;
 //TTF_Font *font = NULL;
 
@@ -47,11 +51,14 @@ void blit_image (int x, int y,
 /***********************************************************************************/
 
 void intro_page( bool & intro, 
-		bool & main_quit); // hien thi man hinh intro
+		bool & main_quit, 
+		int & level_chose); // hien thi man hinh intro
 
 void value_button();
 
 void intro_page_main(); // nap cac hinh de duoc hien thi trong Intro
+
+void chose_level(int & level_chose); // hien thi cac button va chon level
 
 void help_main(); // hien thi phan giup do
 
@@ -61,13 +68,15 @@ void help_main(); // hien thi phan giup do
 int main ( int argc, char* args[] )
 {
   bool main_quit =false, intro = true;
+  int count = 0; // dung de background chop den xanh do
+  int level_chose = 1; // level mac dinh la easy
   
   if (check_SDL() == false)
     return 1;
 
   while (main_quit == false)
   {
-    intro_page (intro, main_quit); // hien thi intro
+    intro_page (intro, main_quit, level_chose); // hien thi intro
    
   }
   return 0;
@@ -112,7 +121,8 @@ SDL_Surface *verify_image (string filename)
 /***********************************************************************************/
 
 void intro_page( bool & intro,
-		bool & main_quit)
+		bool & main_quit, 
+		int & level_chose)
 {
   value_button();
   intro_page_main();
@@ -133,7 +143,14 @@ void intro_page( bool & intro,
 	    event.button.button == SDL_BUTTON_LEFT)
 	  {
 	    blit_image (350+ 0*100, 525, button_img, screen, &button_press[0]);
-	    SDL_Flip (screen);
+	    button_img = verify_image ("images/button_level.bmp");
+	    for (int i=0; i<NBR_LEVEL; i++)
+	    {
+	      blit_image (50, 50+ i*150, button_img, screen, &level[i]);
+	      SDL_Flip (screen);
+	      SDL_Delay (300);	      
+	    }
+	    chose_level (level_chose);
 	    break;
 	  }
 	  
@@ -192,7 +209,20 @@ void value_button()
      button_press[i].w = SIZE_BUTTON_W;
      button_press[i].h = SIZE_BUTTON_H;  
   }
- 
+  
+  for (int i=0; i<NBR_LEVEL; i++)
+  {
+    level[i].x = 0;
+    level[i].y = i*SIZE_LEVEL_H;
+    level[i].w = SIZE_LEVEL_W;
+    level[i].h = SIZE_LEVEL_H;
+    
+    level_press[i].x = SIZE_LEVEL_W;
+    level_press[i].y = i*SIZE_LEVEL_H;
+    level_press[i].w = SIZE_LEVEL_W;
+    level_press[i].h = SIZE_LEVEL_H;
+  }
+   
 }
 
 
@@ -206,6 +236,62 @@ void intro_page_main()
     blit_image (350+ i*100, 525, button_img, screen, &button[i]);
 
   SDL_Flip (screen);
+}
+
+void chose_level (int & level_chose)
+{
+  bool quit= false;
+  while (quit ==false)
+  {
+    if( SDL_PollEvent( &event ) )
+    {
+      if ( event.type == SDL_MOUSEBUTTONDOWN )
+      {
+	int a = event.button.x;
+	int b = event.button.y;
+	
+	//easy
+	if (a> 50 && a<175 && b >50 && b < 175 && 
+	  event.button.button == SDL_BUTTON_LEFT)
+	{
+	  blit_image (50, 50+ 0*150, button_img, screen, &level_press[0]);
+	  SDL_Flip (screen);
+	  SDL_Delay(2000);
+	  intro_page_main ();
+	  quit = true;
+	  level_chose = 1;
+	  
+	}
+	
+	//nomal
+	if (a> 50 && a<175 && b >200 && b < 325 && 
+	  event.button.button == SDL_BUTTON_LEFT)
+	{
+	  blit_image (50, 50+ 1*150, button_img, screen, &level_press[1]);
+	  SDL_Flip (screen);
+	  SDL_Delay (2000);
+	  intro_page_main ();
+	  quit = true;
+	  level_chose = 2;
+	  
+	}
+	
+	//crazy
+	if (a> 50 && a<175 && b >350 && b < 475 && 
+	  event.button.button == SDL_BUTTON_LEFT)
+	{
+	  blit_image (50, 50+ 2*150, button_img, screen, &level_press[2]);
+	  SDL_Flip (screen);
+	  SDL_Delay (2000);
+	  intro_page_main ();
+	  quit = true;
+	  level_chose = 3;
+	  
+	}
+      }
+    }
+  }
+  
 }
 
 void help_main ()
