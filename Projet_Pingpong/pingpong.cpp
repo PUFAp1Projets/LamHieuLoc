@@ -14,9 +14,13 @@ const int LIM_UP = 55; //gioi han ben tren
 const int LIM_DOWN = 590; // gioi han ben duoi
 const int LIM_LEFT = 75; // gioi han ben trai
 const int LIM_RIGHT = 1025; // gioi han ben phai
+const int GALLET_HEIGHT = 135;
+const int GALLET_WIDTH = 35;
 const int BALL_HEIGHT = 45;
 const int BALL_WIDTH = 45;
 const int BALL_SPEED = 5;
+const int GALLET_SPEED = 16;
+const int BALL_PLAY = 3;
 const int SIZE_BUTTON_H = 75;
 const int SIZE_BUTTON_W = 75;
 const int SIZE_LEVEL_H = 125; //size cua button chon level
@@ -29,6 +33,8 @@ const int DIFFICULT=0;
 
 SDL_Surface *screen=NULL;
 SDL_Surface *background=NULL;
+SDL_Surface *gallet1_img=NULL;
+SDL_Surface *gallet2_img=NULL;
 SDL_Surface *image2=NULL;
 SDL_Surface *button_img=NULL;
 SDL_Rect button[NBR_BUTTON], level[NBR_LEVEL];
@@ -40,9 +46,10 @@ typedef struct movement_image
 {
   int x, y;
   int dx, dy; 
-} the_ball;
+} the_ball, gallet;
 
 static the_ball ball[NBR_LEVEL]; // banh theo level va so lan choi
+static gallet gallet1, gallet2;
 
 /***********************************************************************************/
 /***********************************************************************************/
@@ -53,6 +60,10 @@ void value_begin(); //thiet lap gia tri cua ball va gallet
 bool check_SDL(); // kiem tra va thiet lap cua so
 
 void cleaning(); // don dep SDL, hinh anh
+
+void control_gallet1(); // dieu khien cua player 1
+
+void control_gallet2(); // dieu khien cua player 2
 
 /***********************************************************************************/
 void ball_movement (int & count, 
@@ -122,6 +133,10 @@ int main ( int argc, char* args[] )
       
       // banh chay
       ball_movement(count, level_chose);
+      
+      // player dieu khien gallet
+      control_gallet1();
+      control_gallet2();
        
       // du 10s chua de  banh tang them toc do
       ball_speed_inc(faster_time, level_chose);
@@ -178,6 +193,16 @@ void value_begin()
 	break;
       }
   }
+  
+  gallet1.x = LIM_LEFT - GALLET_WIDTH;
+  gallet1.y = SCREEN_HEIGHT/2 - GALLET_HEIGHT/2;
+  gallet1.dx = 0;
+  gallet1.dy = GALLET_SPEED;
+   
+  gallet2.x = LIM_RIGHT;
+  gallet2.y = SCREEN_HEIGHT/2 - GALLET_HEIGHT/2;
+  gallet2.dx = 0;
+  gallet2.dy = GALLET_SPEED;
 }
 
 bool check_SDL()
@@ -195,9 +220,37 @@ bool check_SDL()
 
 void cleaning()
 {
+  SDL_FreeSurface( gallet1_img );
+  SDL_FreeSurface( gallet2_img );
   SDL_FreeSurface( image2 );
   SDL_FreeSurface( background );
   SDL_Quit();
+}
+
+void control_gallet1()
+{
+  Uint8 *keystates = SDL_GetKeyState ( NULL );
+    
+  if (keystates [SDLK_a]) gallet1.y -= gallet1.dy;
+  else if (keystates [SDLK_z])  gallet1.y += gallet1.dy;
+  
+  //gallet dung lai khi dung tuong
+  if (gallet1.y < LIM_UP) gallet1.y = LIM_UP; 
+  else if (gallet1.y > LIM_DOWN - GALLET_HEIGHT)
+    gallet1.y = LIM_DOWN - GALLET_HEIGHT;
+ 
+}
+void control_gallet2()
+{
+  Uint8 *keystates = SDL_GetKeyState ( NULL );
+  
+  if (keystates [SDLK_UP]) gallet2.y -= gallet2.dy;
+  else if (keystates [SDLK_DOWN]) gallet2.y += gallet2.dy;
+  
+  //Gallet se dung lai khi dung tuong
+  if (gallet2.y< LIM_UP) gallet2.y = LIM_UP;
+  else if (gallet2.y > LIM_DOWN - GALLET_HEIGHT)
+    gallet2.y = LIM_DOWN - GALLET_HEIGHT;
 }
 
 /***********************************************************************************/
@@ -209,6 +262,8 @@ void ball_movement (int & count,
   if (count == 30) //banh dung tuong, tuong se do len 1 khoang thoi gian ngan
   {
      background = verify_image( "images/bg1_small.bmp" );
+     gallet1_img = verify_image("images/gallet_small.bmp");
+     gallet2_img = verify_image("images/gallet_small.bmp");
      count=0;
   }
   
@@ -221,15 +276,21 @@ void ball_movement (int & count,
   for (int i = 0; i<level_chose; i++)
   {
   // Limit left
-    if (ball[i].x <= LIM_LEFT)
+    if (ball[i].x <= LIM_LEFT && 
+      (ball[i].y <= (gallet1.y+ GALLET_HEIGHT - (BALL_HEIGHT/2)) && 
+      ball[i].y >= gallet1.y - BALL_HEIGHT/2))
     {
       ball[i].dx = -ball[i].dx;
+      gallet1_img = verify_image("images/gallet_red_small.bmp");
       count=0;
     }
   //Limit right
-    if (ball[i].x >= LIM_RIGHT - BALL_WIDTH)
+    if (ball[i].x >= LIM_RIGHT - BALL_WIDTH && 
+      (ball[i].y <= (gallet2.y+ GALLET_HEIGHT - (BALL_HEIGHT/2)) && 
+      ball[i].y >= gallet2.y - BALL_HEIGHT/2))
     {
       ball[i].dx = -ball[i].dx;
+      gallet2_img = verify_image( "images/gallet_red_small.bmp" );
       count=0;
     }
   // Limit up
@@ -245,6 +306,15 @@ void ball_movement (int & count,
       ball[i].dy = -ball[i].dy;
       background = verify_image( "images/bg3_small.bmp" ); 
       count=0;
+    }
+    
+    if (ball[i].x <= LIM_LEFT -10) 
+    {
+      value_begin();
+    }
+    if ( ball[i].x >= LIM_RIGHT- BALL_WIDTH +10) // banh ra ngoai bien phai
+    {
+      value_begin(); // banh hien lai
     }
   }
 }
@@ -288,9 +358,15 @@ SDL_Surface *verify_image (string filename)
 bool get_image()
 {
   background = verify_image ( "images/bg1_small.bmp" );
+  gallet1_img = verify_image ("images/gallet_small.bmp");
+  gallet2_img = verify_image ("images/gallet_small.bmp");
   image2 = verify_image ("images/ball2_2_3.bmp");
     
   if ( background == NULL )
+    return false;
+  if ( gallet1_img == NULL )
+    return false;
+  if ( gallet2_img == NULL )
     return false;
   if ( image2 == NULL )
     return false;
@@ -305,6 +381,10 @@ void show_image (int level_chose)
 
   for (int i=0; i<level_chose; i++)
       blit_image (ball[i].x, ball[i].y, image2, screen);
+  
+  blit_image (gallet1.x, gallet1.y, gallet1_img, screen);
+ 
+  blit_image (gallet2.x, gallet2.y, gallet2_img, screen);
   
 }
 
