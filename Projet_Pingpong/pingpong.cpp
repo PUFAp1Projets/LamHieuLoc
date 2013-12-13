@@ -21,7 +21,7 @@ const int SIZE_BUTTON_H = 75;
 const int SIZE_BUTTON_W = 75;
 const int SIZE_LEVEL_H = 125; //size cua button chon level
 const int SIZE_LEVEL_W = 125;
-const int NBR_BUTTON = 4; // button cua trang intro: hard, help, play, quit
+const int NBR_BUTTON = 4; // button cua trang intro: level, help, play, quit
 const int NBR_LEVEL = 3; // co 3 cap do kho: easy, nomal, va crazy
 const int DIFFICULT=0;
 
@@ -42,7 +42,7 @@ typedef struct movement_image
   int dx, dy; 
 } the_ball;
 
-static the_ball ball; // banh theo level va so lan choi
+static the_ball ball[NBR_LEVEL]; // banh theo level va so lan choi
 
 /***********************************************************************************/
 /***********************************************************************************/
@@ -55,7 +55,10 @@ bool check_SDL(); // kiem tra va thiet lap cua so
 void cleaning(); // don dep SDL, hinh anh
 
 /***********************************************************************************/
-void ball_movement (int & count); 
+void ball_movement (int & count, 
+		int  level_chose); //xac dinh banh theo thoi gian, va cham voi tuong va gallet
+
+void ball_speed_inc (int & faster_time, int level_chose); // toc do banh nhanh hon sau moi 10s
 
 /***********************************************************************************/
 
@@ -75,7 +78,7 @@ void blit_image (int x, int y,
 }
 
 
-void show_image (); //hien thi cac hinh trong khi choi
+void show_image (int level_chose ); //hien thi cac hinh trong khi choi
 
 /***********************************************************************************/
 
@@ -98,6 +101,7 @@ void help_main(); // hien thi phan giup do
 int main ( int argc, char* args[] )
 {
   bool main_quit =false, play = true, intro = true;
+  int faster_time; // thoi gian 10s de banh chay nhanh hon
   int count = 0; // dung de background chop den xanh do
   int level_chose = 1; // level mac dinh la easy
   
@@ -109,14 +113,18 @@ int main ( int argc, char* args[] )
   while (main_quit == false)
   {
     intro_page (intro, play, main_quit, level_chose); // hien thi intro
+    faster_time= SDL_GetTicks();
     
     while (play) // while duoc chay khi nut Play trong Intro duoc nhan
     {
       // Chuan bi va sap xep cac hinh anh, nap vao SDL 
-      show_image ();
+      show_image (level_chose);
       
       // banh chay
-      ball_movement(count);
+      ball_movement(count, level_chose);
+       
+      // du 10s chua de  banh tang them toc do
+      ball_speed_inc(faster_time, level_chose);
       
       //muon ngung choi nua chung, bam nut thoat cua Windows
       while (SDL_PollEvent(&event) != 0) 
@@ -146,28 +154,30 @@ void value_begin()
   // Banh duoc xuat hien ngau nhien chinh giua theo chieu ngang, va ngau nhien theo chieu doc
   // Banh co huong xuat phat ngau nhien
   srand(time(NULL));
-
-    ball.x = SCREEN_WIDTH/2;  // chinh giua man hinh theo chieu ngan
-    ball.y = rand () % (LIM_DOWN - BALL_HEIGHT - LIM_UP +1)+ LIM_UP; // ngau nhien theo y
-    ball.dx = BALL_SPEED;
-    ball.dy = BALL_SPEED;
+  for (int i=0; i< NBR_LEVEL; i++)
+  {
+    ball[i].x = SCREEN_WIDTH/2;  // chinh giua man hinh theo chieu ngan
+    ball[i].y = rand () % (LIM_DOWN - BALL_HEIGHT - LIM_UP +1)+ LIM_UP; // ngau nhien theo y
+    ball[i].dx = BALL_SPEED;
+    ball[i].dy = BALL_SPEED;
     
     int random = rand()%100;  // ngau nhien 1 so tu 0 den 99
     switch (random%4)
       {
       case 1:  // UP + LEFT
-	ball.dx *= -1;
-	ball.dy *= -1;
+	ball[i].dx *= -1;
+	ball[i].dy *= -1;
 	break;
       case 2:  // DOWN + LEFT
-	ball.dx *= -1;
+	ball[i].dx *= -1;
 	break;
       case 3:  // UP + RIGHT
-	ball.dy *= -1;
+	ball[i].dy *= -1;
 	break;
       case 0: // DOWN + RIGHT
 	break;
       }
+  }
 }
 
 bool check_SDL()
@@ -191,7 +201,8 @@ void cleaning()
 }
 
 /***********************************************************************************/
-void ball_movement (int & count)
+void ball_movement (int & count,
+		    int  level_chose)
 {
   
   count++;
@@ -200,36 +211,61 @@ void ball_movement (int & count)
      background = verify_image( "images/bg1_small.bmp" );
      count=0;
   }
- 
-      ball.x += ball.dx;
-      ball.y += ball.dy;
-
+  
+  for (int i = 0; i<level_chose; i++)
+  { 
+      ball[i].x += ball[i].dx;
+      ball[i].y += ball[i].dy;
+  }
+  
+  for (int i = 0; i<level_chose; i++)
+  {
   // Limit left
-    if (ball.x <= LIM_LEFT)
+    if (ball[i].x <= LIM_LEFT)
     {
-      ball.dx = -ball.dx;
+      ball[i].dx = -ball[i].dx;
       count=0;
     }
   //Limit right
-    if (ball.x >= LIM_RIGHT - BALL_WIDTH)
+    if (ball[i].x >= LIM_RIGHT - BALL_WIDTH)
     {
-      ball.dx = -ball.dx;
+      ball[i].dx = -ball[i].dx;
       count=0;
     }
   // Limit up
-    if (ball.y < LIM_UP)
+    if (ball[i].y < LIM_UP)
     {
-      ball.dy = -ball.dy;
+      ball[i].dy = -ball[i].dy;
       background = verify_image( "images/bg2_small.bmp" );
       count=0;    
     }
   // Limit down
-    if (ball.y > LIM_DOWN - BALL_HEIGHT)
+    if (ball[i].y > LIM_DOWN - BALL_HEIGHT)
     {
-      ball.dy = -ball.dy;
+      ball[i].dy = -ball[i].dy;
       background = verify_image( "images/bg3_small.bmp" ); 
       count=0;
     }
+  }
+}
+
+void ball_speed_inc(int & faster_time, int level_chose)
+{ // cu moi sau 10s, toc do tang len 1 don vi
+  if ((SDL_GetTicks() - faster_time) /1000 > 10)
+  {
+    for (int i = 0; i<level_chose; i++)
+    {
+      if (ball[i].dx >0) 
+	ball[i].dx += 1;
+      else
+	ball[i].dx -= 1; 
+      if (ball[i].dy >0)
+	ball[i].dy += 1;
+      else
+	ball[i].dy -= 1;
+    }
+    faster_time = SDL_GetTicks();
+  }
 }
 
 /***********************************************************************************/
@@ -263,10 +299,12 @@ bool get_image()
 }
 
 
-void show_image ()
+void show_image (int level_chose)
 {
   blit_image (0, 0, background, screen);
-  blit_image (ball.x, ball.y, image2, screen);
+
+  for (int i=0; i<level_chose; i++)
+      blit_image (ball[i].x, ball[i].y, image2, screen);
   
 }
 
@@ -479,6 +517,5 @@ void help_main ()
   }
   
 }
-
 
 
