@@ -37,6 +37,7 @@ SDL_Surface *gallet1_img=NULL;
 SDL_Surface *gallet2_img=NULL;
 SDL_Surface *image2=NULL;
 SDL_Surface *button_img=NULL;
+SDL_Surface *winner_img=NULL;
 SDL_Rect button[NBR_BUTTON], level[NBR_LEVEL];
 SDL_Rect button_press[NBR_BUTTON], level_press[NBR_LEVEL];
 SDL_Event event;
@@ -71,9 +72,16 @@ void ball_movement (int & count,
 		int & ball_left, 
 		int & pl1_score, 
 		int & pl2_score, 
-		int  level_chose); //xac dinh banh theo thoi gian, va cham voi tuong va gallet
+		int  level_chose, 
+		int & timer_start); //xac dinh banh theo thoi gian, va cham voi tuong va gallet
 
 void ball_speed_inc (int & faster_time, int level_chose); // toc do banh nhanh hon sau moi 10s
+
+void winner (int & ball_left, 
+	     int & pl1_score, 
+	     int  &pl2_score, 
+	     bool & intro, 
+	     bool & play ); // xac dinh choi het luot, xac dinh nguoi thang
 
 /***********************************************************************************/
 
@@ -96,7 +104,8 @@ void blit_image (int x, int y,
 void show_image (int ball_left, 
 	       int pl1_score,
 	       int pl2_score, 
-	       int level_chose ); //hien thi cac hinh trong khi choi
+	       int level_chose, 
+	       int timer_start ); //hien thi cac hinh trong khi choi
 
 /***********************************************************************************/
 
@@ -119,6 +128,7 @@ void help_main(); // hien thi phan giup do
 int main ( int argc, char* args[] )
 {
   bool main_quit =false, play = true, intro = true;
+  int timer_start; // thoi gian de banh khong xuat hiet cung luc
   int faster_time; // thoi gian 10s de banh chay nhanh hon
   int count = 0; // dung de background chop den xanh do
   int ball_left = BALL_PLAY; // so lan choi: 3 lan
@@ -134,15 +144,16 @@ int main ( int argc, char* args[] )
   while (main_quit == false)
   {
     intro_page (intro, play, main_quit, level_chose); // hien thi intro
+    timer_start=SDL_GetTicks(); 
     faster_time= SDL_GetTicks();
     
     while (play) // while duoc chay khi nut Play trong Intro duoc nhan
     {
       // Chuan bi va sap xep cac hinh anh, nap vao SDL 
-      show_image (ball_left, pl1_score, pl2_score, level_chose);
+      show_image (ball_left, pl1_score, pl2_score, level_chose, timer_start);
       
       // banh chay
-      ball_movement(count,ball_left, pl1_score, pl2_score, level_chose);
+      ball_movement(count,ball_left, pl1_score, pl2_score, level_chose, timer_start);
       
       // player dieu khien gallet
       control_gallet1();
@@ -150,6 +161,9 @@ int main ( int argc, char* args[] )
        
       // du 10s chua de  banh tang them toc do
       ball_speed_inc(faster_time, level_chose);
+      
+      //da choi het so lan duoc choi chua? neu roi thi ai la nguoi chien thang
+      winner(ball_left, pl1_score, pl2_score, intro, play);
       
       //muon ngung choi nua chung, bam nut thoat cua Windows
       while (SDL_PollEvent(&event) != 0) 
@@ -201,7 +215,7 @@ void value_begin()
   srand(time(NULL));
   for (int i=0; i< NBR_LEVEL; i++)
   {
-    ball[i].x = SCREEN_WIDTH/2;  // chinh giua man hinh theo chieu ngan
+    ball[i].x = SCREEN_WIDTH/2;  // chinh giua man hinh theo chieu ngang
     ball[i].y = rand () % (LIM_DOWN - BALL_HEIGHT - LIM_UP +1)+ LIM_UP; // ngau nhien theo y
     ball[i].dx = BALL_SPEED;
     ball[i].dy = BALL_SPEED;
@@ -234,7 +248,7 @@ void value_begin()
   gallet2.dx = 0;
   gallet2.dy = GALLET_SPEED;
 }
-
+// thiet lap windows va kiem tra windows
 bool check_SDL()
 {
     if( SDL_Init( SDL_INIT_EVERYTHING ) == -1 ) return false;
@@ -248,11 +262,12 @@ bool check_SDL()
     return true;
 }
 
-void cleaning()
-{
+void cleaning() //don dep, giai phong bo nho
+{}
   SDL_FreeSurface( gallet1_img );
   SDL_FreeSurface( gallet2_img );
   SDL_FreeSurface( image2 );
+  SDL_FreeSurface( winner_img );
   SDL_FreeSurface( background );
   SDL_Quit();
 }
@@ -288,11 +303,12 @@ void ball_movement (int & count,
 		    int & ball_left,
 		    int & pl1_score, 
 		    int & pl2_score, 
-		    int  level_chose)
+		    int  level_chose, 
+		    int & timer_start)
 {
   
   count++;
-  if (count == 30) //banh dung tuong, tuong se do len 1 khoang thoi gian ngan
+  if (count == 30) //banh dung tuong, tuong se chuyen mau 1 khoang thoi gian ngan
   {
      background = verify_image( "images/bg1_small.bmp" );
      gallet1_img = verify_image("images/gallet_small.bmp");
@@ -301,9 +317,12 @@ void ball_movement (int & count,
   }
   
   for (int i = 0; i<level_chose; i++)
-  { 
+  { // begin play, banh xuat hien khong cung luc ma xuat hien cach nhau 2s
+    if ((SDL_GetTicks() - timer_start) /2000 > i) 
+    {
       ball[i].x += ball[i].dx;
       ball[i].y += ball[i].dy;
+    }  
   }
   
   for (int i = 0; i<level_chose; i++)
@@ -340,24 +359,26 @@ void ball_movement (int & count,
       background = verify_image( "images/bg3_small.bmp" ); 
       count=0;
     }
-    
+    // banh ra ngoai bien trai
     if (ball[i].x <= LIM_LEFT -10) 
     {
       value_begin();
       ball_left--;
       pl1_score++;
+      timer_start = SDL_GetTicks();
     }
     if ( ball[i].x >= LIM_RIGHT- BALL_WIDTH +10) // banh ra ngoai bien phai
     {
       value_begin(); // banh hien lai
       ball_left--; // so lan choi giam di
       pl2_score++; // diem cua player thang tang len
+      timer_start = SDL_GetTicks(); // reset lai timer
     }
   }
 }
 
 void ball_speed_inc(int & faster_time, int level_chose)
-{ // cu moi sau 10s, toc do tang len 1 don vi
+{// cu moi sau 10s, toc do tang len 1 don v
   if ((SDL_GetTicks() - faster_time) /1000 > 10)
   {
     for (int i = 0; i<level_chose; i++)
@@ -375,7 +396,37 @@ void ball_speed_inc(int & faster_time, int level_chose)
   }
 }
 
-/***********************************************************************************/
+void winner (int & ball_left, 
+	     int & pl1_score, 
+	     int  &pl2_score, 
+	     bool & intro, 
+	     bool & play)
+{
+  if (ball_left == 0) // neu so lan choi da het
+  {
+    intro = true;
+    play = false;
+    
+    if (pl1_score > pl2_score) // neu player 1 thang
+    {
+      blit_image ( SCREEN_WIDTH - 450, 100, winner_img, screen);
+      SDL_Flip(screen);
+    }
+    else // neu player 2 thang
+    {
+      blit_image ( 100, 100, winner_img, screen);
+      SDL_Flip(screen);
+    }
+    // thiet lap lai gia tri diem ban dau, va so lan choi la 3 cho truong hop muon choi lai
+    ball_left = BALL_PLAY;
+    pl1_score = 0;
+    pl2_score = 0;
+    SDL_Delay (5000);
+    
+  }
+}
+
+/**************************** for im***********************************************/
 
 SDL_Surface *verify_image (string filename)
 {
@@ -398,6 +449,7 @@ bool get_image()
   gallet1_img = verify_image ("images/gallet_small.bmp");
   gallet2_img = verify_image ("images/gallet_small.bmp");
   image2 = verify_image ("images/ball2_2_3.bmp");
+  winner_img = verify_image ("images/winner_cup.bmp");
     
   if ( background == NULL )
     return false;
@@ -407,6 +459,8 @@ bool get_image()
     return false;
   if ( image2 == NULL )
     return false;
+  if ( winner_img == NULL )
+       return false;
 
     return true;
 }
@@ -415,20 +469,22 @@ bool get_image()
 void show_image (int ball_left, 
 	       int pl1_score,
 	       int pl2_score, 
-	       int level_chose)
+	       int level_chose, 
+	       int timer_start )
 {
   blit_image (0, 0, background, screen);
-  
+  // you have 3 times to play
   for (int i=0; i< ball_left; i++)
     blit_image (ball_screen[i].x, ball_screen[i].y, image2, screen);
-
+ // show player 1 score
   for (int i=0; i< pl1_score; i++)
     blit_image (ball_score1[i].x, ball_score1[i].y, image2, screen);
-
+ // show player 2 score
   for (int i=0; i< pl2_score; i++)
     blit_image (ball_score2[i].x, ball_score2[i].y, image2, screen);
-
+	// show the ball but not at the same time
   for (int i=0; i<level_chose; i++)
+    if ((SDL_GetTicks() - timer_start) /2000 > i)
       blit_image (ball[i].x, ball[i].y, image2, screen);
   
   blit_image (gallet1.x, gallet1.y, gallet1_img, screen);
@@ -438,15 +494,15 @@ void show_image (int ball_left,
 }
 
 
-/***********************************************************************************/
+/********************** for introduction page *************************************/
 
 void intro_page( bool & intro, 
 		bool & play, 
 		bool & main_quit, 
 		int & level_chose)
 {
-  value_button();
-  intro_page_main();
+  value_button(); // take the area in button.bmp for the button
+  intro_page_main(); // show 4 buttons
   
   while (intro)
   {
@@ -521,14 +577,14 @@ void intro_page( bool & intro,
   get_image ();
 }
 void value_button()
-{
+{                                     
   for (int i =0; i < NBR_BUTTON; i++)
-  {
+  {  //area to take button level, help, play and quit
      button[i].x = 0;
      button[i].y = i*SIZE_BUTTON_H;
      button[i].w = SIZE_BUTTON_W;
      button[i].h = SIZE_BUTTON_H;
-     
+     ////area to take button level, help, play and quit if they are pressed
      button_press[i].x = SIZE_BUTTON_W;
      button_press[i].y = i*SIZE_BUTTON_H;
      button_press[i].w = SIZE_BUTTON_W;
@@ -536,12 +592,12 @@ void value_button()
   }
   
   for (int i=0; i<NBR_LEVEL; i++)
-  {
+  { //area to take button easy, nomal and crazy
     level[i].x = 0;
     level[i].y = i*SIZE_LEVEL_H;
     level[i].w = SIZE_LEVEL_W;
     level[i].h = SIZE_LEVEL_H;
-    
+    //area to take button easy, nomal and crazy if they are pressed
     level_press[i].x = SIZE_LEVEL_W;
     level_press[i].y = i*SIZE_LEVEL_H;
     level_press[i].w = SIZE_LEVEL_W;
@@ -551,7 +607,7 @@ void value_button()
 }
 
 
-void intro_page_main()
+void intro_page_main() // show introduction page with only 4 button: Level, Help, Play, Quit
 {
   background = verify_image ( "images/intro_page.bmp" );
   button_img = verify_image ("images/button.bmp");
@@ -562,7 +618,8 @@ void intro_page_main()
 
   SDL_Flip (screen);
 }
-
+// For chosing the level: easy, nomal or crazy. 
+// After chosing, these buttons will disappear
 void chose_level (int & level_chose)
 {
   bool quit= false;
@@ -619,7 +676,7 @@ void chose_level (int & level_chose)
   
 }
 
-void help_main ()
+void help_main ()//show help menu
 {
   bool quit= false;
   blit_image (150, 150, image2, screen);

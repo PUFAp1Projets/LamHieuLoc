@@ -8,3 +8,4 @@
 13/12/2013: Afficher la balle coresspondant au niveau de difficulte, accelerer sa vitesse apres chaque 10 secondes
 13/12/2013: 6e eissai: Afficher et controler les gallets, reussir a faire la collision entre la balle et les gallets
 14/12/2013: Afficher le resultat des joueurs et le nombre de tours
+14/12/2013: Determiner le gagnant du jeu, afficher la coupe, afficher les 3 balles avec un ecart de temps de 2 secondes
