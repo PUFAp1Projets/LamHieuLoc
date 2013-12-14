@@ -263,7 +263,7 @@ bool check_SDL()
 }
 
 void cleaning() //don dep, giai phong bo nho
-{}
+{
   SDL_FreeSurface( gallet1_img );
   SDL_FreeSurface( gallet2_img );
   SDL_FreeSurface( image2 );
