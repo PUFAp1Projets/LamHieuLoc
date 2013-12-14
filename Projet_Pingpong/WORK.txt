@@ -6,3 +6,5 @@
 13/12/2013: Afficher le contenu de la touche Level
 13/12/2013: Afficher la page du jeu avec la balle qui se deplace dans la limite de 4 cotes de la table
 13/12/2013: Afficher la balle coresspondant au niveau de difficulte, accelerer sa vitesse apres chaque 10 secondes
+13/12/2013: 6e eissai: Afficher et controler les gallets, reussir a faire la collision entre la balle et les gallets
+14/12/2013: Afficher le resultat des joueurs et le nombre de tours

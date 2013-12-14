@@ -48,7 +48,8 @@ typedef struct movement_image
   int dx, dy; 
 } the_ball, gallet;
 
-static the_ball ball[NBR_LEVEL]; // banh theo level va so lan choi
+static the_ball ball[NBR_LEVEL], ball_screen[BALL_PLAY]; // banh theo level va so lan choi
+static the_ball ball_score1[BALL_PLAY], ball_score2[BALL_PLAY]; // so banh hien thi thay cho so diem cua player
 static gallet gallet1, gallet2;
 
 /***********************************************************************************/
@@ -67,6 +68,9 @@ void control_gallet2(); // dieu khien cua player 2
 
 /***********************************************************************************/
 void ball_movement (int & count, 
+		int & ball_left, 
+		int & pl1_score, 
+		int & pl2_score, 
 		int  level_chose); //xac dinh banh theo thoi gian, va cham voi tuong va gallet
 
 void ball_speed_inc (int & faster_time, int level_chose); // toc do banh nhanh hon sau moi 10s
@@ -89,7 +93,10 @@ void blit_image (int x, int y,
 }
 
 
-void show_image (int level_chose ); //hien thi cac hinh trong khi choi
+void show_image (int ball_left, 
+	       int pl1_score,
+	       int pl2_score, 
+	       int level_chose ); //hien thi cac hinh trong khi choi
 
 /***********************************************************************************/
 
@@ -114,6 +121,9 @@ int main ( int argc, char* args[] )
   bool main_quit =false, play = true, intro = true;
   int faster_time; // thoi gian 10s de banh chay nhanh hon
   int count = 0; // dung de background chop den xanh do
+  int ball_left = BALL_PLAY; // so lan choi: 3 lan
+  int pl1_score = 0; // so diem cua cua player 1
+  int pl2_score = 0; // so diem cua player 2
   int level_chose = 1; // level mac dinh la easy
   
   if (check_SDL() == false)
@@ -129,10 +139,10 @@ int main ( int argc, char* args[] )
     while (play) // while duoc chay khi nut Play trong Intro duoc nhan
     {
       // Chuan bi va sap xep cac hinh anh, nap vao SDL 
-      show_image (level_chose);
+      show_image (ball_left, pl1_score, pl2_score, level_chose);
       
       // banh chay
-      ball_movement(count, level_chose);
+      ball_movement(count,ball_left, pl1_score, pl2_score, level_chose);
       
       // player dieu khien gallet
       control_gallet1();
@@ -149,6 +159,9 @@ int main ( int argc, char* args[] )
 	  case SDL_QUIT:
 	    intro = true;
 	    play = false;
+	    ball_left = BALL_PLAY;
+	    pl1_score = 0;
+	    pl2_score = 0;
 	}
       }
       // Neu khong co gi truc trac, thi hien thi hinh ra man hinh
@@ -165,7 +178,24 @@ int main ( int argc, char* args[] )
 
 void value_begin()
 {
-
+  //Xac dinh vi tri hien thi cua Banh dai dien cho so lan duoc choi 
+  for (int i=0; i< BALL_PLAY; i++)
+  {
+    ball_screen[i].x = 800 + (i*50);
+    ball_screen[i].y = 600;
+    ball_screen[i].dx = 0;
+    ball_screen[i].dy =0;
+    
+    ball_score2[i].x = 100 +(i*50);
+    ball_score2[i].y = 10;
+    ball_score2[i].dx = 0;
+    ball_score2[i].dy = 0;
+    
+    ball_score1[i].x = 850 + (i*50);
+    ball_score1[i].y = 10;
+    ball_score1[i].dx = 0;
+    ball_score1[i].dy = 0;
+  }
   // Banh duoc xuat hien ngau nhien chinh giua theo chieu ngang, va ngau nhien theo chieu doc
   // Banh co huong xuat phat ngau nhien
   srand(time(NULL));
@@ -255,6 +285,9 @@ void control_gallet2()
 
 /***********************************************************************************/
 void ball_movement (int & count,
+		    int & ball_left,
+		    int & pl1_score, 
+		    int & pl2_score, 
 		    int  level_chose)
 {
   
@@ -311,10 +344,14 @@ void ball_movement (int & count,
     if (ball[i].x <= LIM_LEFT -10) 
     {
       value_begin();
+      ball_left--;
+      pl1_score++;
     }
     if ( ball[i].x >= LIM_RIGHT- BALL_WIDTH +10) // banh ra ngoai bien phai
     {
       value_begin(); // banh hien lai
+      ball_left--; // so lan choi giam di
+      pl2_score++; // diem cua player thang tang len
     }
   }
 }
@@ -375,9 +412,21 @@ bool get_image()
 }
 
 
-void show_image (int level_chose)
+void show_image (int ball_left, 
+	       int pl1_score,
+	       int pl2_score, 
+	       int level_chose)
 {
   blit_image (0, 0, background, screen);
+  
+  for (int i=0; i< ball_left; i++)
+    blit_image (ball_screen[i].x, ball_screen[i].y, image2, screen);
+
+  for (int i=0; i< pl1_score; i++)
+    blit_image (ball_score1[i].x, ball_score1[i].y, image2, screen);
+
+  for (int i=0; i< pl2_score; i++)
+    blit_image (ball_score2[i].x, ball_score2[i].y, image2, screen);
 
   for (int i=0; i<level_chose; i++)
       blit_image (ball[i].x, ball[i].y, image2, screen);
@@ -597,5 +646,6 @@ void help_main ()
   }
   
 }
+
 
 
