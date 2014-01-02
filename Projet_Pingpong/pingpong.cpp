@@ -164,7 +164,7 @@ int main ( int argc, char* args[] )
       //compter le nombre de tour,si c'est fini alors identifier le vainqueur
       winner(ball_left, pl1_score, pl2_score, intro, play);
       
-      //pour quitter le jeu immediatement, appuyez sur la touche QUITTER de Windows
+      //pour quitter le jeu immediatement, appuyez sur la touche QUITTER du Terminal
       while (SDL_PollEvent(&event) != 0) 
       {
 	switch (event.type)
@@ -247,7 +247,7 @@ void value_begin()
   gallet2.dx = 0;
   gallet2.dy = GALLET_SPEED;
 }
-//parametrer Windows et le verifier
+//parametrer le Terminal et le verifier
 bool check_SDL()
 {
     if( SDL_Init( SDL_INIT_EVERYTHING ) == -1 ) return false;
@@ -425,7 +425,7 @@ void winner (int & ball_left,
   }
 }
 
-/****************************LES FONCTION POUR LES IMGAES***************************************/
+/****************************LES FONCTION POUR LES IMAGES***************************************/
 
 SDL_Surface *verify_image (string filename)
 {
@@ -434,7 +434,7 @@ SDL_Surface *verify_image (string filename)
   hinh = SDL_LoadBMP (filename.c_str()); //charger l'image en bmp 
   if (hinh != NULL) //si le chargement est reussi
   {
-    ep_hinh = SDL_DisplayFormat( hinh ); //modifier l'image pour qu'elle est adaptable
+    ep_hinh = SDL_DisplayFormat( hinh ); //modifier l'image pour qu'elle soit adaptable
     SDL_FreeSurface (hinh); //liberer l'image
     if (ep_hinh != NULL) //filtrer les couleurs inutiles - transparent
       SDL_SetColorKey (ep_hinh, SDL_SRCCOLORKEY, SDL_MapRGB (ep_hinh->format, 0, 0xFF, 0xFF ));
