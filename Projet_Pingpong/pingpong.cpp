@@ -432,7 +432,7 @@ SDL_Surface *verify_image (string filename)
   SDL_Surface* hinh = NULL;
   SDL_Surface* ep_hinh = NULL;
   hinh = SDL_LoadBMP (filename.c_str()); //charger l'image en bmp 
-  if (hinh != NULL) //si le charchement est reussi
+  if (hinh != NULL) //si le chargement est reussi
   {
     ep_hinh = SDL_DisplayFormat( hinh ); //modifier l'image pour qu'elle est adaptable
     SDL_FreeSurface (hinh); //liberer l'image
@@ -500,7 +500,7 @@ void intro_page( bool & intro,
 		bool & main_quit, 
 		int & level_chose)
 {
-  value_button(); // take the area in button.bmp for the button
+  value_button(); //preparer l'image des touches avant de l'afficher sur l'ecran
   intro_page_main(); //afficher 4 touches
   
   while (intro)
@@ -578,12 +578,12 @@ void intro_page( bool & intro,
 void value_button()
 {                                     
   for (int i =0; i < NBR_BUTTON; i++)
-  {  //area to take button level, help, play and quit
+  {  //traitement des images avant de les afficher
      button[i].x = 0;
      button[i].y = i*SIZE_BUTTON_H;
      button[i].w = SIZE_BUTTON_W;
      button[i].h = SIZE_BUTTON_H;
-     ////area to take button level, help, play and quit if they are pressed
+     //traitement des images lorsque le joueur appuie sur les touches
      button_press[i].x = SIZE_BUTTON_W;
      button_press[i].y = i*SIZE_BUTTON_H;
      button_press[i].w = SIZE_BUTTON_W;
@@ -591,12 +591,12 @@ void value_button()
   }
   
   for (int i=0; i<NBR_LEVEL; i++)
-  { //area to take button easy, nomal and crazy
+  { //traitement des images avant de les afficher
     level[i].x = 0;
     level[i].y = i*SIZE_LEVEL_H;
     level[i].w = SIZE_LEVEL_W;
     level[i].h = SIZE_LEVEL_H;
-    //area to take button easy, nomal and crazy if they are pressed
+    //traitement des images lorsque le joueur appuie sur les touches
     level_press[i].x = SIZE_LEVEL_W;
     level_press[i].y = i*SIZE_LEVEL_H;
     level_press[i].w = SIZE_LEVEL_W;
