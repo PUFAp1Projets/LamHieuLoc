@@ -10,10 +10,10 @@ using namespace std;
 const int SCREEN_WIDTH = 1100;
 const int SCREEN_HEIGHT = 650;
 const int SCREEN_BPP = 24;
-const int LIM_UP = 55; //gioi han ben tren
-const int LIM_DOWN = 590; // gioi han ben duoi
-const int LIM_LEFT = 75; // gioi han ben trai
-const int LIM_RIGHT = 1025; // gioi han ben phai
+const int LIM_UP = 55; //la limite en haut 
+const int LIM_DOWN = 590; //la limite en bas
+const int LIM_LEFT = 75; //la limite a gauche
+const int LIM_RIGHT = 1025; //la limite a droite
 const int GALLET_HEIGHT = 135;
 const int GALLET_WIDTH = 35;
 const int BALL_HEIGHT = 45;
@@ -23,10 +23,10 @@ const int GALLET_SPEED = 16;
 const int BALL_PLAY = 3;
 const int SIZE_BUTTON_H = 75;
 const int SIZE_BUTTON_W = 75;
-const int SIZE_LEVEL_H = 125; //size cua button chon level
+const int SIZE_LEVEL_H = 125; //la taille de la touche LEVEL
 const int SIZE_LEVEL_W = 125;
-const int NBR_BUTTON = 4; // button cua trang intro: level, help, play, quit
-const int NBR_LEVEL = 3; // co 3 cap do kho: easy, nomal, va crazy
+const int NBR_BUTTON = 4; //le nombre de touches de la page INTRO: level, help, play, quit
+const int NBR_LEVEL = 3; // 3 niveau de difficulte: easy, nomal, et crazy
 const int DIFFICULT=0;
 
 /***********************************************************************************/
@@ -49,23 +49,23 @@ typedef struct movement_image
   int dx, dy; 
 } the_ball, gallet;
 
-static the_ball ball[NBR_LEVEL], ball_screen[BALL_PLAY]; // banh theo level va so lan choi
-static the_ball ball_score1[BALL_PLAY], ball_score2[BALL_PLAY]; // so banh hien thi thay cho so diem cua player
+static the_ball ball[NBR_LEVEL], ball_screen[BALL_PLAY]; //la balle selon le niveau et le nombre de tour
+static the_ball ball_score1[BALL_PLAY], ball_score2[BALL_PLAY]; //le nombre des balles affichee au lieu d'afficher le point des joueurs 
 static gallet gallet1, gallet2;
 
 /***********************************************************************************/
 /***********************************************************************************/
 
-// Thiet lap gia tri cua ball, gallet ban dau
-void value_begin(); //thiet lap gia tri cua ball va gallet 
+//Etablir les valeurs initiales des balles et des gallets
+void value_begin();  
 
-bool check_SDL(); // kiem tra va thiet lap cua so
+bool check_SDL(); //fonction de verifier SDL
 
-void cleaning(); // don dep SDL, hinh anh
+void cleaning(); //fonction d'effacer SDL et les images
 
-void control_gallet1(); // dieu khien cua player 1
+void control_gallet1(); //fonction de controle du joueur 1 
 
-void control_gallet2(); // dieu khien cua player 2
+void control_gallet2(); //fonction de controle du joueur 2
 
 /***********************************************************************************/
 void ball_movement (int & count, 
@@ -73,26 +73,26 @@ void ball_movement (int & count,
 		int & pl1_score, 
 		int & pl2_score, 
 		int  level_chose, 
-		int & timer_start); //xac dinh banh theo thoi gian, va cham voi tuong va gallet
+		int & timer_start); //identifier le nombre de balles correspondant au temps, va cham voi tuong va gallet
 
-void ball_speed_inc (int & faster_time, int level_chose); // toc do banh nhanh hon sau moi 10s
+void ball_speed_inc (int & faster_time, int level_chose); //la vitesse de la balle accelerant apres chaque 10 secondes
 
 void winner (int & ball_left, 
 	     int & pl1_score, 
 	     int  &pl2_score, 
 	     bool & intro, 
-	     bool & play ); // xac dinh choi het luot, xac dinh nguoi thang
+	     bool & play ); //identifier le tour de jouer et le vainqueur
 
 /***********************************************************************************/
 
-SDL_Surface *verify_image (string filename); // lay hinh tu nguon hinh bmp
+SDL_Surface *verify_image (string filename); //prendre l'image de la source bmp
 
-bool get_image(); // hinh duoc xu ly de phu hop voi thong so khai bao
+bool get_image(); //traiter les images pour adapter aux parametres donnes
 
 void blit_image (int x, int y, 
 		  SDL_Surface* source, 
 		  SDL_Surface* destination, 
-		  SDL_Rect* clip = NULL) // nap hinh vao de chua bi hien thi
+		  SDL_Rect* clip = NULL) //charger l'image pour preparer l'affichage
 {
     SDL_Rect offset;
     offset.x = x;
@@ -105,22 +105,22 @@ void show_image (int ball_left,
 	       int pl1_score,
 	       int pl2_score, 
 	       int level_chose, 
-	       int timer_start ); //hien thi cac hinh trong khi choi
+	       int timer_start ); //afficher les images pendant 
 
 /***********************************************************************************/
 
 void intro_page( bool & intro, 
 		bool & play, 
 		bool & main_quit, 
-		int & level_chose); // hien thi man hinh intro
+		int & level_chose); //afficher la page INTRO
 
 void value_button();
 
-void intro_page_main(); // nap cac hinh de duoc hien thi trong Intro
+void intro_page_main(); //charger les images qui seront affichees sur la page INTRO
 
-void chose_level(int & level_chose); // hien thi cac button va chon level
+void chose_level(int & level_chose); //fonction d'affichage la touche LEVEL et ses submenus
 
-void help_main(); // hien thi phan giup do
+void help_main(); //afficher l'aide (HELP)
 
 /***********************************************************************************/
 /******************************  MAIN   ********************************************/
@@ -128,14 +128,13 @@ void help_main(); // hien thi phan giup do
 int main ( int argc, char* args[] )
 {
   bool main_quit =false, play = true, intro = true;
-  int timer_start; // thoi gian de banh khong xuat hiet cung luc
-  int faster_time; // thoi gian 10s de banh chay nhanh hon
-  int count = 0; // dung de background chop den xanh do
-  int ball_left = BALL_PLAY; // so lan choi: 3 lan
-  int pl1_score = 0; // so diem cua cua player 1
-  int pl2_score = 0; // so diem cua player 2
-  int level_chose = 1; // level mac dinh la easy
-  
+  int timer_start; //le temps pour que les balles n'apparaissent pas en meme temps 
+  int faster_time; //le temps de 10 secondes pour accelerer la balle
+  int count = 0; //arreter l'arriere-plan pour clignoter le rouge et le bleu
+  int ball_left = BALL_PLAY; //le nombre de tour: 3 tours
+  int pl1_score = 0; //le point du 1er joueur
+  int pl2_score = 0; //le poitn du 2e joueur
+  int level_chose = 1; //le niveau initial est EASY   
   if (check_SDL() == false)
     return 1;
     
@@ -143,29 +142,29 @@ int main ( int argc, char* args[] )
 
   while (main_quit == false)
   {
-    intro_page (intro, play, main_quit, level_chose); // hien thi intro
+    intro_page (intro, play, main_quit, level_chose); //afficher la page INTRO
     timer_start=SDL_GetTicks(); 
     faster_time= SDL_GetTicks();
     
-    while (play) // while duoc chay khi nut Play trong Intro duoc nhan
+    while (play) //la boucle WHILE commence a fonctionner quand le joueur appuie sur la touche PLAY 
     {
-      // Chuan bi va sap xep cac hinh anh, nap vao SDL 
+      //Preparer, ranger et charger les images 
       show_image (ball_left, pl1_score, pl2_score, level_chose, timer_start);
       
-      // banh chay
+      //le mouvement de la balle
       ball_movement(count,ball_left, pl1_score, pl2_score, level_chose, timer_start);
       
-      // player dieu khien gallet
+      //controler les gallets par les joueurs
       control_gallet1();
       control_gallet2();
        
-      // du 10s chua de  banh tang them toc do
+      //compter 10s pour accelerer la vitesse de la balle
       ball_speed_inc(faster_time, level_chose);
       
-      //da choi het so lan duoc choi chua? neu roi thi ai la nguoi chien thang
+      //compter le nombre de tour,si c'est fini alors identifier le vainqueur
       winner(ball_left, pl1_score, pl2_score, intro, play);
       
-      //muon ngung choi nua chung, bam nut thoat cua Windows
+      //pour quitter le jeu immediatement, appuyez sur la touche QUITTER de Windows
       while (SDL_PollEvent(&event) != 0) 
       {
 	switch (event.type)
@@ -178,7 +177,7 @@ int main ( int argc, char* args[] )
 	    pl2_score = 0;
 	}
       }
-      // Neu khong co gi truc trac, thi hien thi hinh ra man hinh
+      //Si il n'y a pas de probleme, afficher les images sur l'ecran
       if( SDL_Flip( screen ) == -1 ) return 1;
     }
   }    
@@ -188,11 +187,11 @@ int main ( int argc, char* args[] )
 }
   
 /***********************************************************************************/
-/**************************  Cac function  *****************************************/
+/************************* les functions  *****************************************/
 
 void value_begin()
 {
-  //Xac dinh vi tri hien thi cua Banh dai dien cho so lan duoc choi 
+  //identifier la position d'affichage de la balle representant le nombre de tour de chaque joueur 
   for (int i=0; i< BALL_PLAY; i++)
   {
     ball_screen[i].x = 800 + (i*50);
@@ -210,30 +209,30 @@ void value_begin()
     ball_score1[i].dx = 0;
     ball_score1[i].dy = 0;
   }
-  // Banh duoc xuat hien ngau nhien chinh giua theo chieu ngang, va ngau nhien theo chieu doc
-  // Banh co huong xuat phat ngau nhien
+
+  //la balle est parametree pour qu'elle apparaisse aleatoirement sur l'horizontal et la verticale et au milieu de l'ecran
   srand(time(NULL));
   for (int i=0; i< NBR_LEVEL; i++)
   {
-    ball[i].x = SCREEN_WIDTH/2;  // chinh giua man hinh theo chieu ngang
-    ball[i].y = rand () % (LIM_DOWN - BALL_HEIGHT - LIM_UP +1)+ LIM_UP; // ngau nhien theo y
+    ball[i].x = SCREEN_WIDTH/2; //au milieu et en horizontal
+    ball[i].y = rand () % (LIM_DOWN - BALL_HEIGHT - LIM_UP +1)+ LIM_UP; //aleatoire selon la verticale
     ball[i].dx = BALL_SPEED;
     ball[i].dy = BALL_SPEED;
     
-    int random = rand()%100;  // ngau nhien 1 so tu 0 den 99
+    int random = rand()%100;  //choisir par hasard un chiffre de 0 a 99
     switch (random%4)
       {
-      case 1:  // UP + LEFT
+      case 1:  //en haut a gauche
 	ball[i].dx *= -1;
 	ball[i].dy *= -1;
 	break;
-      case 2:  // DOWN + LEFT
+      case 2:  //en bas a gauche
 	ball[i].dx *= -1;
 	break;
-      case 3:  // UP + RIGHT
+      case 3:  //en haut a droite
 	ball[i].dy *= -1;
 	break;
-      case 0: // DOWN + RIGHT
+      case 0: //en bas a droite
 	break;
       }
   }
@@ -248,7 +247,7 @@ void value_begin()
   gallet2.dx = 0;
   gallet2.dy = GALLET_SPEED;
 }
-// thiet lap windows va kiem tra windows
+//parametrer Windows et le verifier
 bool check_SDL()
 {
     if( SDL_Init( SDL_INIT_EVERYTHING ) == -1 ) return false;
@@ -262,7 +261,7 @@ bool check_SDL()
     return true;
 }
 
-void cleaning() //don dep, giai phong bo nho
+void cleaning() //effacer et liberer la memoire
 {
   SDL_FreeSurface( gallet1_img );
   SDL_FreeSurface( gallet2_img );
@@ -279,7 +278,7 @@ void control_gallet1()
   if (keystates [SDLK_a]) gallet1.y -= gallet1.dy;
   else if (keystates [SDLK_z])  gallet1.y += gallet1.dy;
   
-  //gallet dung lai khi dung tuong
+  //le gallet est arrete lorsqu'il touche les limites de l'ecran
   if (gallet1.y < LIM_UP) gallet1.y = LIM_UP; 
   else if (gallet1.y > LIM_DOWN - GALLET_HEIGHT)
     gallet1.y = LIM_DOWN - GALLET_HEIGHT;
@@ -292,7 +291,7 @@ void control_gallet2()
   if (keystates [SDLK_UP]) gallet2.y -= gallet2.dy;
   else if (keystates [SDLK_DOWN]) gallet2.y += gallet2.dy;
   
-  //Gallet se dung lai khi dung tuong
+  //le gallet est arrete lorsqu'il touche les limites de l'ecran
   if (gallet2.y< LIM_UP) gallet2.y = LIM_UP;
   else if (gallet2.y > LIM_DOWN - GALLET_HEIGHT)
     gallet2.y = LIM_DOWN - GALLET_HEIGHT;
@@ -308,7 +307,7 @@ void ball_movement (int & count,
 {
   
   count++;
-  if (count == 30) //banh dung tuong, tuong se chuyen mau 1 khoang thoi gian ngan
+  if (count == 30) //lorsque la balle touche le mur, le mur sera change de couleur pendant un instant
   {
      background = verify_image( "images/bg1_small.bmp" );
      gallet1_img = verify_image("images/gallet_small.bmp");
@@ -317,7 +316,7 @@ void ball_movement (int & count,
   }
   
   for (int i = 0; i<level_chose; i++)
-  { // begin play, banh xuat hien khong cung luc ma xuat hien cach nhau 2s
+  { //au debut, la balle n'apparait pas en meme temps mais avec un ecart de temps de 2s
     if ((SDL_GetTicks() - timer_start) /2000 > i) 
     {
       ball[i].x += ball[i].dx;
@@ -327,7 +326,7 @@ void ball_movement (int & count,
   
   for (int i = 0; i<level_chose; i++)
   {
-  // Limit left
+  //la limite a gauche
     if (ball[i].x <= LIM_LEFT && 
       (ball[i].y <= (gallet1.y+ GALLET_HEIGHT - (BALL_HEIGHT/2)) && 
       ball[i].y >= gallet1.y - BALL_HEIGHT/2))
@@ -336,7 +335,7 @@ void ball_movement (int & count,
       gallet1_img = verify_image("images/gallet_red_small.bmp");
       count=0;
     }
-  //Limit right
+  //la limite a droite
     if (ball[i].x >= LIM_RIGHT - BALL_WIDTH && 
       (ball[i].y <= (gallet2.y+ GALLET_HEIGHT - (BALL_HEIGHT/2)) && 
       ball[i].y >= gallet2.y - BALL_HEIGHT/2))
@@ -345,21 +344,21 @@ void ball_movement (int & count,
       gallet2_img = verify_image( "images/gallet_red_small.bmp" );
       count=0;
     }
-  // Limit up
+  //la limite en haut
     if (ball[i].y < LIM_UP)
     {
       ball[i].dy = -ball[i].dy;
       background = verify_image( "images/bg2_small.bmp" );
       count=0;    
     }
-  // Limit down
+  //la limite en bas
     if (ball[i].y > LIM_DOWN - BALL_HEIGHT)
     {
       ball[i].dy = -ball[i].dy;
       background = verify_image( "images/bg3_small.bmp" ); 
       count=0;
     }
-    // banh ra ngoai bien trai
+    //si la balle va en dehors de la limite a gauche
     if (ball[i].x <= LIM_LEFT -10) 
     {
       value_begin();
@@ -367,18 +366,18 @@ void ball_movement (int & count,
       pl1_score++;
       timer_start = SDL_GetTicks();
     }
-    if ( ball[i].x >= LIM_RIGHT- BALL_WIDTH +10) // banh ra ngoai bien phai
+    if ( ball[i].x >= LIM_RIGHT- BALL_WIDTH +10) //si la balle va en dehors de la limite a gauche
     {
-      value_begin(); // banh hien lai
-      ball_left--; // so lan choi giam di
-      pl2_score++; // diem cua player thang tang len
-      timer_start = SDL_GetTicks(); // reset lai timer
+      value_begin(); //la balle reapparait
+      ball_left--; //le nombre de tour diminue
+      pl2_score++; //le point du vainqueur augmente
+      timer_start = SDL_GetTicks(); //compter a nouveau le temps
     }
   }
 }
 
 void ball_speed_inc(int & faster_time, int level_chose)
-{// cu moi sau 10s, toc do tang len 1 don v
+{//apres chaque 10 secondes, la vitesse de la balle augmente
   if ((SDL_GetTicks() - faster_time) /1000 > 10)
   {
     for (int i = 0; i<level_chose; i++)
@@ -402,22 +401,22 @@ void winner (int & ball_left,
 	     bool & intro, 
 	     bool & play)
 {
-  if (ball_left == 0) // neu so lan choi da het
+  if (ball_left == 0) //si le nombre de tour est fini
   {
     intro = true;
     play = false;
     
-    if (pl1_score > pl2_score) // neu player 1 thang
+    if (pl1_score > pl2_score) //si le 1er joueur a vaincu
     {
       blit_image ( SCREEN_WIDTH - 450, 100, winner_img, screen);
       SDL_Flip(screen);
     }
-    else // neu player 2 thang
+    else //si le 2e joueur a vaincu
     {
       blit_image ( 100, 100, winner_img, screen);
       SDL_Flip(screen);
     }
-    // thiet lap lai gia tri diem ban dau, va so lan choi la 3 cho truong hop muon choi lai
+    //parametrer a nouveau la valeur de point initial et le nombre de tour sera 3 si le joueur veut rejouer
     ball_left = BALL_PLAY;
     pl1_score = 0;
     pl2_score = 0;
@@ -426,18 +425,18 @@ void winner (int & ball_left,
   }
 }
 
-/**************************** for im***********************************************/
+/****************************LES FONCTION POUR LES IMGAES***************************************/
 
 SDL_Surface *verify_image (string filename)
 {
   SDL_Surface* hinh = NULL;
   SDL_Surface* ep_hinh = NULL;
-  hinh = SDL_LoadBMP (filename.c_str()); //load anh bmp vao hinh
-  if (hinh != NULL) // neu load thanh cong
+  hinh = SDL_LoadBMP (filename.c_str()); //charger l'image en bmp 
+  if (hinh != NULL) //si le charchement est reussi
   {
-    ep_hinh = SDL_DisplayFormat( hinh ); // ep chuan hinh lai cho phu hop, dua vao ephinh
-    SDL_FreeSurface (hinh); // giai toa hinh
-    if (ep_hinh != NULL) // loc nhung mau khong can thiet - transparent
+    ep_hinh = SDL_DisplayFormat( hinh ); //modifier l'image pour qu'elle est adaptable
+    SDL_FreeSurface (hinh); //liberer l'image
+    if (ep_hinh != NULL) //filtrer les couleurs inutiles - transparent
       SDL_SetColorKey (ep_hinh, SDL_SRCCOLORKEY, SDL_MapRGB (ep_hinh->format, 0, 0xFF, 0xFF ));
   }
   return ep_hinh;
@@ -473,16 +472,16 @@ void show_image (int ball_left,
 	       int timer_start )
 {
   blit_image (0, 0, background, screen);
-  // you have 3 times to play
+  //le joueur a 3 tours
   for (int i=0; i< ball_left; i++)
     blit_image (ball_screen[i].x, ball_screen[i].y, image2, screen);
- // show player 1 score
+  //afficher le point du 1er joueur
   for (int i=0; i< pl1_score; i++)
     blit_image (ball_score1[i].x, ball_score1[i].y, image2, screen);
- // show player 2 score
+  //afficher le 2e joueur
   for (int i=0; i< pl2_score; i++)
     blit_image (ball_score2[i].x, ball_score2[i].y, image2, screen);
-	// show the ball but not at the same time
+  //afficher la balle mais pas en meme temps 
   for (int i=0; i<level_chose; i++)
     if ((SDL_GetTicks() - timer_start) /2000 > i)
       blit_image (ball[i].x, ball[i].y, image2, screen);
@@ -494,7 +493,7 @@ void show_image (int ball_left,
 }
 
 
-/********************** for introduction page *************************************/
+/********************** LA PAGE INTRODUCTION *************************************/
 
 void intro_page( bool & intro, 
 		bool & play, 
@@ -502,7 +501,7 @@ void intro_page( bool & intro,
 		int & level_chose)
 {
   value_button(); // take the area in button.bmp for the button
-  intro_page_main(); // show 4 buttons
+  intro_page_main(); //afficher 4 touches
   
   while (intro)
   {
@@ -515,7 +514,7 @@ void intro_page( bool & intro,
 	  int x = event.button.x;
 	  int y = event.button.y;
 	  
-	  //bam nut LEVEL
+	  //appuyer la touche LEVEL
 	  if (x> 350 && x < 425 && y >525 && y <600 && 
 	    event.button.button == SDL_BUTTON_LEFT)
 	  {
@@ -531,7 +530,7 @@ void intro_page( bool & intro,
 	    break;
 	  }
 	  
-	  //help
+	  //la page d'aide (HELP)
 	  if (x> 450 && x < 525 && y >525 && y <600 && 
 	    event.button.button == SDL_BUTTON_LEFT)
 	  {
@@ -544,7 +543,7 @@ void intro_page( bool & intro,
 	    
 	  }
 	  
-	  //play
+	  //jouer
 	  if (x> 550 && x < 625 && y >525 && y <600 && 
 	    event.button.button == SDL_BUTTON_LEFT)
 	  {
@@ -556,7 +555,7 @@ void intro_page( bool & intro,
 	    break;
 	  }
 	  
-	  //quit
+	  //quitter le jeu
 	  if (x> 650 && x < 725 && y >525 && y <600 && 
 	    event.button.button == SDL_BUTTON_LEFT)
 	  {
@@ -607,7 +606,7 @@ void value_button()
 }
 
 
-void intro_page_main() // show introduction page with only 4 button: Level, Help, Play, Quit
+void intro_page_main() //afficher la page Intro avec 4 touches : Level, Help, Play, Quit
 {
   background = verify_image ( "images/intro_page.bmp" );
   button_img = verify_image ("images/button.bmp");
@@ -618,8 +617,8 @@ void intro_page_main() // show introduction page with only 4 button: Level, Help
 
   SDL_Flip (screen);
 }
-// For chosing the level: easy, nomal or crazy. 
-// After chosing, these buttons will disappear
+// choisir le niveau difficulte: easy, nomal or crazy. 
+// apres l'avoir choisi, les touches sont disparaissent
 void chose_level (int & level_chose)
 {
   bool quit= false;
@@ -632,7 +631,7 @@ void chose_level (int & level_chose)
 	int a = event.button.x;
 	int b = event.button.y;
 	
-	//easy
+	//le niveau simple (EASY)
 	if (a> 50 && a<175 && b >50 && b < 175 && 
 	  event.button.button == SDL_BUTTON_LEFT)
 	{
@@ -645,7 +644,7 @@ void chose_level (int & level_chose)
 	  
 	}
 	
-	//nomal
+	//le niveau normal (NORMAL)
 	if (a> 50 && a<175 && b >200 && b < 325 && 
 	  event.button.button == SDL_BUTTON_LEFT)
 	{
@@ -658,7 +657,7 @@ void chose_level (int & level_chose)
 	  
 	}
 	
-	//crazy
+	//le niveau difficile (CRAZY)
 	if (a> 50 && a<175 && b >350 && b < 475 && 
 	  event.button.button == SDL_BUTTON_LEFT)
 	{
@@ -676,7 +675,7 @@ void chose_level (int & level_chose)
   
 }
 
-void help_main ()//show help menu
+void help_main ()//afficher la page d'aide (HELP MENU)
 {
   bool quit= false;
   blit_image (150, 150, image2, screen);
@@ -696,7 +695,7 @@ void help_main ()//show help menu
 	  SDL_Delay (1000);
 	  intro_page_main ();
 	  quit = true;
-	  
+	 
 	}
       }
     }
