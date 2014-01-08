@@ -2,14 +2,28 @@ LamHieuLoc
 ==========
 
 Le projet de Nguyen Thanh Son Lam et de Truong Ba Loc et de Mai Trung Hieu
+==========================================================================
 
---Pour le jeu casse_brique--
+******** PROJETS AP1 (M.OLIVIER LY) **********
 
-Monsieur Olivier, ici nous avons 2 fichiers pour repondre a votre premiere question.
+-- Pour le jeu casse-brique --
 
-En se basant sur votre fichier goutte.cpp, nous avons reecrit la code et il semble que le deuxieme "casse_brique1.cpp" marche bien que le premier.
+Le projet est fini avec une grande joie.
+Le repertoire contient 3 fichiers correspondant aux 3 questions que vous nous avez demandees
 
+-- Pour le jeu Ping pong --
+
+Nous avons reussi a utiliser SDL dans la programmation du jeu. 
+C'est donc tres dur pour nous apres des mois de travail acharne.
+Pour plus d'information, veuillez liser le fichier WORK et README dans le repertoire.
+
+Evidemment, les erreurs sont inevitables.
 Nous esperons recevoir vos commentaires afin d'ameliorer notre code.
+Merci
+
+******** PROJET WEB (M.FABIEN BALDACCI) ********
+
+Le projet est en cours de realiser et nous esperons qu'il vous satisfera.
 Merci
 
 LamHieuLoc
