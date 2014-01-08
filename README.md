@@ -15,7 +15,7 @@ Le repertoire contient 3 fichiers correspondant aux 3 questions que vous nous av
 
 Nous avons reussi a utiliser SDL dans la programmation du jeu. 
 C'est donc tres dur pour nous apres des mois de travail acharne.
-Pour plus d'information, veuillez liser le fichier WORK et README dans le repertoire.
+Pour plus d'information, veuillez lire le fichier WORK et README dans le repertoire.
 
 Evidemment, les erreurs sont inevitables.
 Nous esperons recevoir vos commentaires afin d'ameliorer notre code.
