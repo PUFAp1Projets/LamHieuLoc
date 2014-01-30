@@ -1,0 +1,149 @@
+@charset "utf-8";
+/* CSS Document */
+
+body
+{
+	background-image:url(../Image/background.jpg);
+	background-size:cover;
+}
+
+
+#logo a
+{
+	padding-left:150px;
+	text-decoration:none;
+	color:white;
+	font-size:50px;
+}
+#header
+{
+	display:inline-block;
+	margin-left:150px;
+}
+
+#header a
+{
+	text-decoration:none;
+	color:white;
+	opacity:0.6;
+	margin-left:10px;
+	font-size:38px;
+}
+
+#header h1
+{
+	margin-top:160px;
+}
+
+#home , #works , #image , #about, #contact
+{
+	border:#000 medium solid;
+	float:left;
+	height: 500px;
+	width: 200px;
+}
+
+#home
+{
+	background-color:#EF6827;
+}
+
+#home:hover
+{
+	background-image:url(../Image/hover1.jpg);
+	background-size:cover;
+	opacity:1.0;
+}
+
+#home:hover a
+{
+	color:#F00;
+	opacity:1.0;
+}
+
+
+#about
+{
+	background-color:#F90;
+}
+
+#about:hover
+{
+	background-image:url(../Image/hover2.jpg);
+	background-size:cover;
+	opacity:1.0;
+}
+
+#about:hover a
+{
+	color:#F00;
+	/*font-size:38px;*/
+	opacity:1.0;
+}
+
+
+#works
+{
+	background-color:#FC6;
+}
+
+#works:hover
+{
+	background-image:url(../Image/hover4.jpg);
+	background-size:cover;
+	opacity:1.0;
+}
+
+#works:hover a
+{
+	color:#F00;
+	/*font-size:38px;*/
+	opacity:1.0;
+}
+
+
+#image
+{
+	background-color:#6C6;
+}
+
+#image:hover
+{
+	background-image:url(../Image/hover5.jpg);
+	background-size:cover;
+	opacity:1.0;
+}
+
+#image:hover a
+{
+	color:#F00;
+	/*font-size:38px;*/
+	opacity:1.0;
+}
+
+#contact
+{
+	background-color:#093;
+}
+
+#contact:hover
+{
+	background-image:url(../Image/hover2.jpg);
+	background-size:cover;
+	opacity:1.0;
+}
+
+#contact:hover a
+{
+	color:#F00;
+	/*font-size:38px;*/
+	opacity:1.0;
+}
+
+#footer
+{
+	margin-top:15px;
+	text-align:center;
+	font-size:17px;
+	font-style:italic;
+}

@@ -1,0 +1,15 @@
+pong 8: khong cho cac trai banh xuat hien cung 1 luc, ma banh xuat hien cach nhau moi 2s. cap nhat cho winner, hien thi cup cho nguoi chien thang, xac dinh winner
+
+pong 7: hien thi so diem cua player thang, hien thi so vong choi
+
+pong 6: hien thi gallet va dieu khien gallet, xac dinh gallet va cham voi banh
+
+pong 5: hien banh theo level, tang toc sau moi 10s
+
+pong 4: hien man hinh choi game, voi 1 trai banh va cham cac LIM
+
+pong 3: hien va su dung duoc cac nut cua level
+
+pong 2: bam cac button co su thay doi, xu ly nut Quit, va hien duoc help
+
+pong 1: hien trang introduction va cac nut

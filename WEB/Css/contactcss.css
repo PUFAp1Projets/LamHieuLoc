@@ -1,0 +1,141 @@
+@charset "utf-8";
+/* CSS Document */
+
+body
+{
+	background-image:url(../Image/background.jpg);
+	background-size:cover;
+}
+
+
+#logo a
+{
+	padding-left:150px;
+	text-decoration:none;
+	color:white;
+	font-size:50px;
+}
+#header
+{
+	display:inline-block;
+	margin-left:150px;
+}
+
+#header a
+{
+	text-decoration:none;
+	color:white;
+	opacity:0.6;
+	margin-left:10px;
+	font-size:38px;
+}
+
+#header h1
+{
+	margin-top:10px;
+}
+
+#home , #works , #image , #about, #contact
+{
+	border:#000 medium solid;
+	float:left;
+	height: 100px;
+	width: 200px;
+}
+
+
+
+#home
+{
+	background-color:#666;
+	opacity:0.4;
+}
+
+#home:hover
+{
+	background-color:#EF6827;
+	opacity:1.0;
+}
+
+#about
+{
+	background-color:#666;
+	opacity:0.4;
+}
+
+#about:hover
+{
+	background-color:#F90;
+	opacity:1.0;
+}
+
+#works
+{
+	background-color:#666;
+	opacity:0.4;
+}
+
+#works:hover
+{
+	background-color:#FC6;
+	opacity:1.0;
+}
+
+#image
+{
+	background-color:#666;
+	opacity:0.4;
+}
+
+#image:hover
+{
+	background-color:#6C6
+	opacity:1.0;
+}
+
+#contact
+{
+	background-color:#093;
+}
+
+#contact a
+{
+	color:#00F;
+}
+
+#body
+{
+	background-image:url(../Image/black.png);
+	margin-left:150px;
+	margin-top:20px;
+	width:1022px;
+	border:#000 solid medium;
+}
+
+#formulaire
+{
+	margin:60px;
+	color:#0FC;
+}
+
+
+#map
+{
+	display:inline-block
+}
+
+.map
+{
+	float:left;
+	margin-left:50px;
+	margin-bottom:50px;
+}
+
+
+#footer
+{
+	margin-top:15px;
+	text-align:center;
+	font-size:17px;
+	font-style:italic;
+}
