@@ -23,7 +23,8 @@ Merci
 
 ******** PROJET WEB (M.FABIEN BALDACCI) ********
 
-Le projet est en cours de realiser et nous esperons qu'il vous satisfera.
+Notre projet est fini. Veuillez voir et commenter le code afin d'ameliorer le projet.
+S'il y a problemes, contactez-nous le plutot possible!
 Merci
 
 LamHieuLoc
